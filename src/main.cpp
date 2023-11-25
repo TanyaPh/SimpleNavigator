@@ -3,7 +3,7 @@
 
 int main() {
     Graph graph;
-    graph.LoadGraphFromFile("examples/graph10.txt");
+    graph.LoadGraphFromFile("examples/graph_tree.txt");
 
     GraphAlgorithms solver;
     int* bfs = solver.BreadthFirstSearch(graph, 0);
