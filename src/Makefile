@@ -8,8 +8,8 @@ all: gcov_report
 
 test_graph: clean
 	# $(CC) $(GCOV) -c graph/test.cpp 
-	$(CC) -c graph/test.cpp $(CHECKFLAGS)
-	$(CC) $(GCOV) -o test test.o $(CHECKFLAGS)
+	$(CC) -c graph/s21_graph.cpp graph/test.cpp $(CHECKFLAGS)
+	$(CC) $(GCOV) -o test test.o s21_graph.o $(CHECKFLAGS)
 	./test
 
 test_graph_algorithms: clean
