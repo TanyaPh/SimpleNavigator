@@ -3,4 +3,5 @@
 int main() {
     Graph graph;
     graph.LoadGraphFromFile("examples/graph10.txt");
+    graph.ExportGraphToDot("examples/output.dot");
 }
