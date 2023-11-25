@@ -9,6 +9,7 @@ public:
     ~Graph();
     bool LoadGraphFromFile(const std::string& filename);
     void ExportGraphToDot(const std::string& filename);
+    std::vector<int> Destinations(int src);
 
 private:
     int size; // размер матрицы смежности
@@ -48,4 +49,12 @@ bool Graph::LoadGraphFromFile(const std::string& filename) {
 
     file.close();
     return true;
+}
+
+std::vector<int> Graph::Destinations(int src) {
+    std::vector<int> dest;
+    for (int i : adjacencyMatrix[src]) {
+        dest.push_back(i);
+    }
+    return dest;
 }
