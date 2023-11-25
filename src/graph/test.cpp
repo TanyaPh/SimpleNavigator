@@ -2,5 +2,5 @@
 
 int main() {
     Graph graph;
-    graph.LoadGraphFromFile("../examples/graph10.txt");
+    graph.LoadGraphFromFile("examples/graph10.txt");
 }

@@ -34,13 +34,13 @@ bool Graph::LoadGraphFromFile(const std::string& filename) {
 
 std::vector<int> Graph::Destinations(int src) {
     std::vector<int> dest;
-    for (int i = 0; i < adjacencyMatrix[src].size(); i++) {
+    for (std::vector<int>::size_type i = 0; i < adjacencyMatrix[src].size(); i++) {
         if (adjacencyMatrix[src][i] != 0) 
             dest.push_back(i);
     }
     return dest;
 }
 
-int Graph::GetSize() {
+int Graph::GetSize() const {
     return size;
 }
