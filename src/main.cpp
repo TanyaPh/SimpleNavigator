@@ -6,17 +6,17 @@ int main() {
     graph.LoadGraphFromFile("examples/graph10.txt");
 
     GraphAlgorithms solver;
-    int* bfs = solver.BreadthFirstSearch(graph, 1);
-    int* dfs = solver.DepthFirstSearch(graph, 1);
+    int* bfs = solver.BreadthFirstSearch(graph, 0);
 
     std::cout << "BFS" << std::endl;
-    for(int i = 0; i < 11; i++) {
+    for(int i = 0; i < graph.GetSize(); i++) {
         std::cout << bfs[i] << ' ';
     }
 
+    int* dfs = solver.DepthFirstSearch(graph, 0);
     std::cout << "\nDFS" << std::endl;
-    for(int i = 0; i < 11; i++) {
-        std::cout << bfs[i] << ' ';
+    for(int i = 0; i < graph.GetSize(); i++) {
+        std::cout << dfs[i] << ' ';
     }
 
     return 0;

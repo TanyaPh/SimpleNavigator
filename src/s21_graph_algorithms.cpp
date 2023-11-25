@@ -19,6 +19,10 @@ int* GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
             s.push(dest);
         }
     }
+    // for (int i : traversed_vertices) {
+    //     std::cout << i;
+    // }
+    // std::cout << std::endl;
     return traversed_vertices.data();
 }
 
@@ -33,8 +37,14 @@ int* GraphAlgorithms::BreadthFirstSearch(Graph &graph, int start_vertex) {
             for (int dest : graph.Destinations(src)) {
                 q.push(dest);
             }
+            q.pop();
+        } else {
+            q.pop();
         }
-        q.pop();
     }
+    // for (int i : traversed_vertices) {
+    //     std::cout << i;
+    // }
+    // std::cout << std::endl;
     return &traversed_vertices[0];
 }
