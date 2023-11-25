@@ -1,4 +1,5 @@
 #include "s21_graph_algorithms.h"
+#include <algorithm>
 #include <stack>
 #include <queue>
 
@@ -8,9 +9,9 @@ int* GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
     s.push(start_vertex);
     while (!s.empty()) {
         int src = s.top();
-        while (std::count(traversed_vertices.begin(), traversed_vertices.end(), src)) {
+        if (std::count(traversed_vertices.begin(), traversed_vertices.end(), src)) {
             s.pop();
-            src = s.top();
+            continue;
         }
         traversed_vertices.push_back(src);
         s.pop();
@@ -27,15 +28,13 @@ int* GraphAlgorithms::BreadthFirstSearch(Graph &graph, int start_vertex) {
     q.push(start_vertex);
     while (!q.empty()) {
         int src = q.front();
-        while (std::find(traversed_vertices.begin(), traversed_vertices.end(), src) != traversed_vertices.end()) {
-            q.pop();
-            src = q.front();
+        if (std::find(traversed_vertices.begin(), traversed_vertices.end(), src) == traversed_vertices.end()) {
+            traversed_vertices.push_back(src);
+            for (int dest : graph.Destinations(src)) {
+                q.push(dest);
+            }
         }
-        traversed_vertices.push_back(src);
         q.pop();
-        for (int dest : graph.Destinations(src)) {
-            q.push(dest);
-        }
     }
     return &traversed_vertices[0];
 }

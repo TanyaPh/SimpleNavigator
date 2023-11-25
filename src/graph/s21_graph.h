@@ -1,3 +1,6 @@
+#ifndef __S21_GRAPH_H__
+#define __S21_GRAPH_H__
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -53,8 +56,11 @@ bool Graph::LoadGraphFromFile(const std::string& filename) {
 
 std::vector<int> Graph::Destinations(int src) {
     std::vector<int> dest;
-    for (int i : adjacencyMatrix[src]) {
-        dest.push_back(i);
+    for (int i = 0; i < adjacencyMatrix[src].size(); i++) {
+        if (adjacencyMatrix[src][i] != 0) 
+            dest.push_back(i);
     }
     return dest;
 }
+
+#endif
