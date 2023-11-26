@@ -3,7 +3,7 @@
 
 int main() {
     Graph graph;
-    graph.LoadGraphFromFile("examples/graph_tree.txt");
+    graph.LoadGraphFromFile("examples/graph_.txt");
 
     GraphAlgorithms solver;
     int* bfs = solver.BreadthFirstSearch(graph, 0);
@@ -18,6 +18,11 @@ int main() {
     for(int i = 0; i < graph.GetSize(); i++) {
         std::cout << dfs[i] << ' ';
     }
+
+    int start = 0, end = 4;
+    double shortestPath = solver.GetShortestPathBetweenVertices(graph, start, end);
+    std::cout << "\nПо алгоритму Дейкстры расстояние от " << start << " до " << end << ": " << shortestPath << std::endl;
+
 
     return 0;
 }

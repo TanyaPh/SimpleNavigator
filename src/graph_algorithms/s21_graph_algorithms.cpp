@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <stack>
 #include <queue>
+#include <limits>
 
 int* GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
     std::vector<int> traversed_vertices;
@@ -45,4 +46,24 @@ int* GraphAlgorithms::BreadthFirstSearch(Graph &graph, int start_vertex) {
     // }
     // std::cout << std::endl;
     return &traversed_vertices[0];
+}
+
+double GraphAlgorithms::GetShortestPathBetweenVertices(Graph &graph, int vertex1, int vertex2) {
+    int num_vertices = graph.GetSize();
+
+    std::vector<double> distances(num_vertices, std::numeric_limits<double>::infinity()); // длины кратчайших путей
+    distances[vertex1] = 0;
+
+    for (int iteration = 0; iteration < num_vertices; ++iteration) {
+        for (int u = 0; u < num_vertices; ++u) { // по вершинам графа
+            for (int v : graph.Destinations(u)) { // где есть направленные ребра из u
+                double weight = graph.GetEdgeWeight(u, v);
+
+                if (distances[u] + weight < distances[v]) {
+                    distances[v] = distances[u] + weight;
+                }
+            }
+        }
+    }
+    return distances[vertex2];
 }
