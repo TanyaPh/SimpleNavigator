@@ -25,7 +25,9 @@ bool Graph::LoadGraphFromFile(const std::string& filename) {
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
             file >> adjacencyMatrix[i][j];
+            std::cout << adjacencyMatrix[i][j] << ' ';
         }
+        std::cout << std::endl;
     }
 
     file.close();
@@ -88,4 +90,8 @@ std::vector<int> Graph::Destinations(int src) {
 
 int Graph::GetSize() const {
     return size;
+}
+
+double Graph::GetEdgeWeight(int source, int destination) const {
+    return adjacencyMatrix[source][destination];
 }
