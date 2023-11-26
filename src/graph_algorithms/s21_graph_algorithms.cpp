@@ -67,3 +67,7 @@ double GraphAlgorithms::GetShortestPathBetweenVertices(Graph &graph, int vertex1
     }
     return distances[vertex2];
 }
+
+//std::vector<std::vector<double>> GraphAlgorithms::GetShortestPathsBetweenAllVertices(Graph &graph) {
+//    // алгоритма Флойда-Уоршелла я взяла разбирать
+//}
