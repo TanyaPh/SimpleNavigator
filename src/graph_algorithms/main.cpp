@@ -8,7 +8,7 @@ int main() {
     GraphAlgorithms solver;
     int* bfs = solver.BreadthFirstSearch(graph, 0);
 
-    std::cout << "BFS" << std::endl;
+    std::cout << "\nBFS" << std::endl;
     for(int i = 0; i < graph.GetSize(); i++) {
         std::cout << bfs[i] << ' ';
     }
@@ -31,6 +31,15 @@ int main() {
 //        }
 //        std::cout << std::endl;
 //    }
+
+    auto mst = solver.GetLeastSpanningTree(graph);
+    std::cout << "\nMST" << std::endl;
+    for (size_t i = 0; i < mst.size(); i++) {
+        for (size_t j = 0; j < mst[i].size(); j++) {
+            std::cout << mst[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
 
     return 0;
 }

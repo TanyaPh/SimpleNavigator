@@ -71,3 +71,36 @@ double GraphAlgorithms::GetShortestPathBetweenVertices(Graph &graph, int vertex1
 //std::vector<std::vector<double>> GraphAlgorithms::GetShortestPathsBetweenAllVertices(Graph &graph) {
 //    // алгоритма Флойда-Уоршелла я взяла разбирать
 //}
+
+std::vector<std::vector<double>> GraphAlgorithms::GetLeastSpanningTree(Graph &graph) {
+    std::vector<std::vector<double>> MST(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
+    std::vector<int> traversed_vertices;
+    int src = 0;
+    int dest = 0;
+    traversed_vertices.push_back(0);
+    double min_distance = std::numeric_limits<double>::infinity();
+
+    for (int i = 0; i < graph.GetSize(); i++) {
+        for (int cur_src : traversed_vertices) {
+            for (int cur_dest : graph.Destinations(cur_src)) {
+                if (std::count(traversed_vertices.begin(), traversed_vertices.end(), cur_dest)) continue;
+
+                double cur_distance = graph.GetEdgeWeight(cur_src, cur_dest);
+                if (cur_distance != 0 && min_distance > cur_distance) {
+                    min_distance = cur_distance;
+                    dest = cur_dest;
+                    src = cur_src;
+                    // std::cout << src << ' ' << dest << " | " << min_distance << std::endl;
+                }
+            }
+        }
+        // std::cout << ">> " << src << ' ' << dest << " | " << min_distance << std::endl;
+        if (min_distance != std::numeric_limits<double>::infinity()) {
+            MST[src][dest] = min_distance;
+            MST[dest][src] = min_distance;
+            traversed_vertices.push_back(dest);
+            min_distance = std::numeric_limits<double>::infinity();
+        }
+    }
+    return MST;
+}   // вроде работает но, требует доработки
