@@ -44,3 +44,7 @@ std::vector<int> Graph::Destinations(int src) {
 int Graph::GetSize() {
     return size;
 }
+
+double Graph::GetEdgeWeight(int source, int destination) const {
+    return adjacencyMatrix[source][destination];
+}

@@ -14,6 +14,7 @@ public:
     void ExportGraphToDot(const std::string& filename);
     std::vector<int> Destinations(int src);
     int GetSize();
+    double GetEdgeWeight(int source, int destination) const;
 
 private:
     int size; // размер матрицы смежности
