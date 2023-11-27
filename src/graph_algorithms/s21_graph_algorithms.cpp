@@ -68,9 +68,28 @@ double GraphAlgorithms::GetShortestPathBetweenVertices(Graph &graph, int vertex1
     return distances[vertex2];
 }
 
-//std::vector<std::vector<double>> GraphAlgorithms::GetShortestPathsBetweenAllVertices(Graph &graph) {
-//    // алгоритма Флойда-Уоршелла я взяла разбирать
-//}
+// алгоритм Флойда-Уоршелла
+std::vector<std::vector<double>> GraphAlgorithms::GetShortestPathsBetweenAllVertices(Graph &graph) {
+    int num_vertices = graph.GetSize();
+    std::vector<std::vector<double>> shortest_paths(num_vertices, std::vector<double>(num_vertices, std::numeric_limits<double>::infinity()));
+
+    for (int u = 0; u < num_vertices; ++u) {
+        for (int v : graph.Destinations(u)) {
+            double weight = graph.GetEdgeWeight(u, v);
+            shortest_paths[u][v] = weight; // начальные значения
+        }
+    }
+
+    for (int k = 0; k < num_vertices; ++k) {
+        for (int i = 0; i < num_vertices; ++i) {
+            for (int j = 0; j < num_vertices; ++j) {
+                shortest_paths[i][j] = std::min(shortest_paths[i][j], shortest_paths[i][k] + shortest_paths[k][j]);
+            }
+        }
+    }
+
+    return shortest_paths;
+}
 
 std::vector<std::vector<double>> GraphAlgorithms::GetLeastSpanningTree(Graph &graph) {
     std::vector<std::vector<double>> MST(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
