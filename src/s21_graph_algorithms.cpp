@@ -3,6 +3,8 @@
 #include <stack>
 #include <queue>
 #include <climits>
+#include <random>
+#include <cmath>
 
 int* GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
     std::vector<int> traversed_vertices;
@@ -223,3 +225,93 @@ std::vector<std::vector<double>> GraphAlgorithms::GetLeastSpanningTree(Graph &gr
 //     }
 //     return MST;
 // }
+
+TsmResult SolveTravelingSalesmanProblem(Graph &graph) {
+    int ants = graph.GetSize();
+    std::vector<std::vector<double>> pheromones(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
+    std::vector<std::vector<double>> add_pher(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
+    int src = 0;
+    TsmResult result = createRoute(graph, pheromones, src);
+    for (auto i = 1; i < 1200; i++) {
+        int src = i % ants;
+        TsmResult cur_ant = createRoute(graph, pheromones, src);
+        addPheromone(cur_ant, add_pher);
+        if (cur_ant.distance < result.distance)
+            result = cur_ant;
+        if (i % ants == 0)
+            updatePheromones(pheromones, add_pher);
+    }
+
+    return result;
+}
+
+TsmResult createRoute(Graph &graph, std::vector<std::vector<double>> &pheromones, int src) {
+    TsmResult res;
+    std::vector<bool> visited(graph.GetSize(), false);
+    for (auto i = 0; i < graph.GetSize(); i++) {
+        visited[src] = true;
+        int dest = chooseNextDestination(transitionProbabilities(graph, pheromones, visited, src));
+        res.vertices.push_back(dest);
+        res.distance += graph.GetEdgeWeight(src, dest);
+        src = dest;
+    }
+    res.vertices.push_back(res.vertices[0]);
+    res.distance += graph.GetEdgeWeight(src, res.vertices[0]);
+    return res;
+}
+
+std::vector<double> transitionProbabilities(Graph &graph, std::vector<std::vector<double>> &pheromones,
+                                            std::vector<bool> &visited, int src) {
+    std::vector<double> probabilityToVertex(graph.GetSize(), 0);
+    double alfa = 2;
+    double beta = 4;
+    double sum;
+    for (int next : graph.Destinations(src)) {
+        if (visited[next] == true) continue;
+        double t = pow(pheromones[src][next], alfa);
+        double n = pow(1 / graph.GetEdgeWeight(src, next), beta);
+        probabilityToVertex[next] = t * n;
+        sum += probabilityToVertex[next];
+    }
+    double prev = 0;
+    for (auto i : probabilityToVertex) {
+        if (i == 0) continue;
+        int p = probabilityToVertex[i] / sum;
+        i = p + prev;
+        prev = i;
+    }
+    return probabilityToVertex;
+}
+
+int chooseNextDestination(std::vector<double> &probabilityToVertex) {
+    int dest;
+    srand(time(0));
+    // double choose = (rand() % 100) / 100;
+    double choose = (double)rand() / RAND_MAX;
+    for (auto i = 0; i < probabilityToVertex.size(); i++) {
+        if (probabilityToVertex[i] > choose) {
+            dest = i;
+            break;
+        }
+    }
+    return dest;
+}
+
+void addPheromone(TsmResult &ant_route, std::vector<std::vector<double>> &add_pher) {
+    int q = 4;
+    double delta = q / ant_route.distance;
+    int src = ant_route.vertices[0];
+    for (auto i = 1; i < ant_route.vertices.size(); i++) {
+        add_pher[src][ant_route.vertices[i]] += delta;
+        add_pher[ant_route.vertices[i]][src] += delta;
+    }
+}
+
+void updatePheromones(std::vector<std::vector<double>> &pheromones, std::vector<std::vector<double>> &add_pher) {
+    for (int i = 0; i < pheromones.size(); i++) {
+        for (int j = 0; j < pheromones[i].size(); j++) {
+            pheromones[i][j] += add_pher[i][j];
+            add_pher[i][j] = 0;
+        }
+    }
+}

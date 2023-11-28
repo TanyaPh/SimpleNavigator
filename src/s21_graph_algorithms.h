@@ -17,6 +17,13 @@ class GraphAlgorithms {
     std::vector<std::vector<double>> GetShortestPathsBetweenAllVertices(Graph &graph);
 
     std::vector<std::vector<double>> GetLeastSpanningTree(Graph &graph);
+
+    TsmResult SolveTravelingSalesmanProblem(Graph &graph);
+};
+
+struct TsmResult {
+    std::vector<int> vertices;
+    double distance;
 };
 
 #endif
