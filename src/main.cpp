@@ -3,7 +3,7 @@
 
 int main() {
     Graph graph;
-    graph.LoadGraphFromFile("examples/graph4.txt");
+    graph.LoadGraphFromFile("examples/graph5.txt");
 
     GraphAlgorithms solver;
     int* bfs = solver.BreadthFirstSearch(graph, 0);
@@ -28,7 +28,13 @@ int main() {
         std::cout << std::endl;
     }
 
-
+    auto tsm = solver.SolveTravelingSalesmanProblem(graph);
+    std::cout << "\nTSM" << std::endl;
+    for (auto i : tsm.vertices) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << tsm.distance << std::endl;
 
     return 0;
 }

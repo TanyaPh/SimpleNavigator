@@ -6,6 +6,12 @@
 #include <random>
 #include <cmath>
 
+// struct TsmResult {
+//     std::vector<int> vertices;
+//     double distance;
+// };
+// typedef struct TsmResult TsmResult;
+
 int* GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
     std::vector<int> traversed_vertices;
     std::stack<int> s;
@@ -226,44 +232,71 @@ std::vector<std::vector<double>> GraphAlgorithms::GetLeastSpanningTree(Graph &gr
 //     return MST;
 // }
 
-TsmResult SolveTravelingSalesmanProblem(Graph &graph) {
+TsmResult GraphAlgorithms::SolveTravelingSalesmanProblem(Graph &graph) {
     int ants = graph.GetSize();
-    std::vector<std::vector<double>> pheromones(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
+    std::vector<std::vector<double>> pheromones(graph.GetSize(), std::vector<double>(graph.GetSize(), 0.2));
     std::vector<std::vector<double>> add_pher(graph.GetSize(), std::vector<double>(graph.GetSize(), 0));
+    srand(time(0));
     int src = 0;
     TsmResult result = createRoute(graph, pheromones, src);
-    for (auto i = 1; i < 1200; i++) {
+    // TsmResult cur_ant {};
+    for (auto i = 1; i < 2400; i++) {
         int src = i % ants;
+        // try {
+        //     cur_ant = createRoute(graph, pheromones, src);
+        // } catch (const std::string& err) {
+        //     std::cout << err << std::endl;
+        //     if (i % ants == 0)
+        //         updatePheromones(pheromones, add_pher);
+        //     continue;
+        // }
         TsmResult cur_ant = createRoute(graph, pheromones, src);
         addPheromone(cur_ant, add_pher);
-        if (cur_ant.distance < result.distance)
+        if (cur_ant.distance < result.distance) {
             result = cur_ant;
+            i = 0;
+            // std::cout << "i: " << i << std::endl;
+        }
         if (i % ants == 0)
             updatePheromones(pheromones, add_pher);
     }
-
     return result;
 }
 
-TsmResult createRoute(Graph &graph, std::vector<std::vector<double>> &pheromones, int src) {
-    TsmResult res;
+TsmResult GraphAlgorithms::createRoute(Graph &graph, std::vector<std::vector<double>> &pheromones, int src) {
+    TsmResult res {};
     std::vector<bool> visited(graph.GetSize(), false);
-    for (auto i = 0; i < graph.GetSize(); i++) {
+    res.vertices.push_back(src);
+    int dest = -1;
+    for (auto i = 0; i < graph.GetSize() - 1; i++) {
         visited[src] = true;
-        int dest = chooseNextDestination(transitionProbabilities(graph, pheromones, visited, src));
+        auto probabilityDest = transitionProbabilities(graph, pheromones, visited, src);
+        int dest = chooseNextDestination(probabilityDest);
         res.vertices.push_back(dest);
         res.distance += graph.GetEdgeWeight(src, dest);
         src = dest;
     }
-    res.vertices.push_back(res.vertices[0]);
-    res.distance += graph.GetEdgeWeight(src, res.vertices[0]);
+    if (graph.GetEdgeWeight(src, res.vertices[0]) != 0) {
+        res.vertices.push_back(res.vertices[0]);
+        res.distance += graph.GetEdgeWeight(src, res.vertices[0]);
+    } else {
+        // throw std::string("it is impossible to solve");
+        res.distance = INT_MAX;
+    }
+
+    std::cout << "\nRES" << std::endl;
+    for (auto i : res.vertices) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << "dis: " << res.distance << std::endl;
     return res;
 }
 
-std::vector<double> transitionProbabilities(Graph &graph, std::vector<std::vector<double>> &pheromones,
-                                            std::vector<bool> &visited, int src) {
+std::vector<double> GraphAlgorithms::transitionProbabilities(Graph &graph, std::vector<std::vector<double>> &pheromones,
+                                                            std::vector<bool> &visited, int src) {
     std::vector<double> probabilityToVertex(graph.GetSize(), 0);
-    double alfa = 2;
+    double alfa = 1;
     double beta = 4;
     double sum;
     for (int next : graph.Destinations(src)) {
@@ -274,31 +307,31 @@ std::vector<double> transitionProbabilities(Graph &graph, std::vector<std::vecto
         sum += probabilityToVertex[next];
     }
     double prev = 0;
-    for (auto i : probabilityToVertex) {
+    for (auto &i : probabilityToVertex) {
         if (i == 0) continue;
-        int p = probabilityToVertex[i] / sum;
+        double p = i / sum;
         i = p + prev;
         prev = i;
     }
     return probabilityToVertex;
 }
 
-int chooseNextDestination(std::vector<double> &probabilityToVertex) {
+int GraphAlgorithms::chooseNextDestination(std::vector<double> &probabilityToVertex) { // need remake
     int dest;
-    srand(time(0));
-    // double choose = (rand() % 100) / 100;
     double choose = (double)rand() / RAND_MAX;
-    for (auto i = 0; i < probabilityToVertex.size(); i++) {
-        if (probabilityToVertex[i] > choose) {
-            dest = i;
-            break;
+    for (auto dest = 0; dest < probabilityToVertex.size(); dest++) {
+        if (probabilityToVertex[dest] > choose) {
+            std::cout << dest << std::endl;
+            return dest;
         }
     }
-    return dest;
+    std::cout << "как так" << std::endl;
+    throw std::string("it is impossible to solve");
+    return -1;
 }
 
-void addPheromone(TsmResult &ant_route, std::vector<std::vector<double>> &add_pher) {
-    int q = 4;
+void GraphAlgorithms::addPheromone(TsmResult &ant_route, std::vector<std::vector<double>> &add_pher) {
+    int q = 12;
     double delta = q / ant_route.distance;
     int src = ant_route.vertices[0];
     for (auto i = 1; i < ant_route.vertices.size(); i++) {
@@ -307,10 +340,11 @@ void addPheromone(TsmResult &ant_route, std::vector<std::vector<double>> &add_ph
     }
 }
 
-void updatePheromones(std::vector<std::vector<double>> &pheromones, std::vector<std::vector<double>> &add_pher) {
+void GraphAlgorithms::updatePheromones(std::vector<std::vector<double>> &pheromones, std::vector<std::vector<double>> &add_pher) {
+    double p = 0.8;
     for (int i = 0; i < pheromones.size(); i++) {
         for (int j = 0; j < pheromones[i].size(); j++) {
-            pheromones[i][j] += add_pher[i][j];
+            pheromones[i][j] = pheromones[i][j] * p + add_pher[i][j];
             add_pher[i][j] = 0;
         }
     }
