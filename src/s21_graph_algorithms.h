@@ -16,8 +16,8 @@ class GraphAlgorithms {
     GraphAlgorithms(GraphAlgorithms&& other) = delete;
     ~GraphAlgorithms() = default;
 
-    int* DepthFirstSearch(Graph &graph, int start_vertex);
-    int* BreadthFirstSearch(Graph &graph, int start_vertex);
+    std::vector<int> DepthFirstSearch(Graph &graph, int start_vertex);
+    std::vector<int> BreadthFirstSearch(Graph &graph, int start_vertex);
 
     double GetShortestPathBetweenVertices(Graph &graph, int vertex1, int vertex2);
     std::vector<std::vector<double>> GetShortestPathsBetweenAllVertices(Graph &graph);

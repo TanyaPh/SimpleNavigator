@@ -3,17 +3,17 @@
 
 int main() {
     Graph graph;
-    graph.LoadGraphFromFile("examples/graph5.txt");
+    graph.LoadGraphFromFile("examples/graph_mst.txt");
 
     GraphAlgorithms solver;
-    int* bfs = solver.BreadthFirstSearch(graph, 0);
+    std::vector<int>  bfs = solver.BreadthFirstSearch(graph, 0);
 
     std::cout << "BFS" << std::endl;
     for (int i = 0; i < graph.GetSize(); i++) {
         std::cout << bfs[i] << ' ';
     }
 
-    int* dfs = solver.DepthFirstSearch(graph, 0);
+    std::vector<int>  dfs = solver.DepthFirstSearch(graph, 0);
     std::cout << "\nDFS" << std::endl;
     for (int i = 0; i < graph.GetSize(); i++) {
         std::cout << dfs[i] << ' ';
@@ -28,13 +28,16 @@ int main() {
         std::cout << std::endl;
     }
 
-    auto tsm = solver.SolveTravelingSalesmanProblem(graph);
-    std::cout << "\nTSM" << std::endl;
-    for (auto i : tsm.vertices) {
-        std::cout << i << ' ';
+    try {
+        TsmResult tsm = solver.SolveTravelingSalesmanProblem(graph);
+        std::cout << "\nTSM" << std::endl;
+        for (auto i : tsm.vertices) {
+            std::cout << i << ' ';
+        }
+        std::cout << std::endl << tsm.distance << std::endl;
+    } catch (std::string& err) {
+        std::cout << "\nTSM\n" << err << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << tsm.distance << std::endl;
 
     return 0;
 }
