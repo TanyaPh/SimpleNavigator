@@ -26,10 +26,32 @@ TEST(GraphTest, LoadGraph) {
     }
 }
 
-// TEST(GraphTest, ExportGraph) {
-//     Graph graph;
-//     graph.ExportGraphToDot("examples/output.dot");
-// }
+TEST(GraphTest, ExportGraph) {
+    Graph graph;
+    graph.LoadGraphFromFile("examples/graph5.txt");
+    graph.ExportGraphToDot("examples/output.dot");
+    std::vector<std::string> expectation = {"graph graphname {",
+                                            "     0;", "     1;",
+                                            "     2;", "     3;",
+                                            "     4;",
+                                            "     0 -- 1;",
+                                            "     0 -- 2;",
+                                            "     1 -- 2;",
+                                            "     1 -- 3;",
+                                            "     2 -- 4;",
+                                            "     3 -- 4;", "}"};
+
+    std::ifstream file("examples/output.dot");
+    std::string line;
+    if (file.is_open()) {
+        for (auto &str : expectation) {
+            std::getline(file, line);
+            EXPECT_EQ(line, str);
+        }
+    }
+    file.close();
+
+}
 
 TEST(GraphTest, Destinations) {
     Graph graph;
