@@ -1,4 +1,6 @@
 #include "s21_graph_algorithms.h"
+#include "Stack/s21_stack.hpp"
+#include "Queue/s21_queue.hpp"
 #include <algorithm>
 #include <stack>
 #include <queue>
@@ -7,7 +9,7 @@
 
 std::vector<int> GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_vertex) {
     std::vector<int> traversed_vertices;
-    std::stack<int> s;
+    s21::Stack<int> s;
     s.push(start_vertex);
     while (!s.empty()) {
         int src = s.top();
@@ -30,7 +32,7 @@ std::vector<int> GraphAlgorithms::DepthFirstSearch(Graph &graph, int start_verte
 
 std::vector<int> GraphAlgorithms::BreadthFirstSearch(Graph &graph, int start_vertex) {
     std::vector<int> traversed_vertices;
-    std::queue<int> q;
+    s21::Queue<int> q;
     q.push(start_vertex);
     while (!q.empty()) {
         int src = q.front();

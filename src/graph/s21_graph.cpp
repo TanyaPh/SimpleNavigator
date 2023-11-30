@@ -25,9 +25,9 @@ bool Graph::LoadGraphFromFile(const std::string& filename) {
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
             file >> adjacencyMatrix[i][j];
-            std::cout << adjacencyMatrix[i][j] << ' ';
+            // std::cout << adjacencyMatrix[i][j] << ' ';
         }
-        std::cout << std::endl;
+        // std::cout << std::endl;
     }
 
     file.close();
