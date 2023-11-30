@@ -22,10 +22,10 @@ test_all: clean
 	./test
 
 test: clean
-	$(CC) tests.cpp graph/s21_graph.cpp graph_algorithms/s21_graph_algorithms.cpp $(CHECKFLAGS) -o tests
-	$(CC) $(GCOV) tests.o graph_algorithms/s21_graph_algorithms.o graph/s21_graph.o $(CHECKFLAGS) 
-	./tests
-	rm -rf tests
+	$(CC) -c tests.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp $(CHECKFLAGS)
+	$(CC) $(GCOV) -o test tests.o  s21_graph_algorithms.o s21_graph.o $(CHECKFLAGS)
+	./test
+	rm -rf test
 
 s21_graph.a:
 	$(CC) -c graph/s21_graph.cpp -o s21_graph.o
