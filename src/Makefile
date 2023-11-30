@@ -7,15 +7,18 @@ OS = $(shell uname)
 all: gcov_report
 
 test_graph: clean
-	# $(CC) $(GCOV) -c graph/test.cpp 
 	$(CC) -c graph/s21_graph.cpp graph/test.cpp $(CHECKFLAGS)
 	$(CC) $(GCOV) -o test test.o s21_graph.o $(CHECKFLAGS)
 	./test
 
 test_graph_algorithms: clean
-	# $(CC) $(GCOV) -c graph_algorithms/main.cpp 
 	$(CC) -c graph_algorithms/main.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp $(CHECKFLAGS)
 	$(CC) $(GCOV) -o test main.o s21_graph_algorithms.o s21_graph.o $(CHECKFLAGS)
+	./test
+
+test_all: clean
+	$(CC) -c main.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp GraphController/s21_GraphController.cpp $(CHECKFLAGS)
+	$(CC) $(GCOV) -o test main.o s21_graph_algorithms.o s21_graph.o s21_GraphController.o $(CHECKFLAGS)
 	./test
 
 
