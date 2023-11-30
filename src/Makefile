@@ -4,28 +4,17 @@ GCOVFLAGS = -fprofile-arcs -ftest-coverage
 GCOV=--coverage
 OS = $(shell uname)
 
-all: gcov_report
+all: console
 
-test_graph: clean
-	$(CC) -c graph/s21_graph.cpp graph/test.cpp $(CHECKFLAGS)
-	$(CC) $(GCOV) -o test test.o s21_graph.o $(CHECKFLAGS)
-	./test
-
-test_graph_algorithms: clean
-	$(CC) -c graph_algorithms/main.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp $(CHECKFLAGS)
-	$(CC) $(GCOV) -o test main.o s21_graph_algorithms.o s21_graph.o $(CHECKFLAGS)
-	./test
-
-test_all: clean
+console: clean
 	$(CC) -c main.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp GraphController/s21_GraphController.cpp $(CHECKFLAGS)
 	$(CC) $(GCOV) -o test main.o s21_graph_algorithms.o s21_graph.o s21_GraphController.o $(CHECKFLAGS)
 	./test
 
-test: clean
-	$(CC) -c tests.cpp graph_algorithms/s21_graph_algorithms.cpp graph/s21_graph.cpp $(CHECKFLAGS)
+test: clean s21_graph.a s21_graph_algorithms.a
+	$(CC) -c tests.cpp $(CHECKFLAGS)
 	$(CC) $(GCOV) -o test tests.o  s21_graph_algorithms.o s21_graph.o $(CHECKFLAGS)
 	./test
-	rm -rf test
 
 s21_graph.a:
 	$(CC) -c graph/s21_graph.cpp -o s21_graph.o
@@ -36,7 +25,13 @@ s21_graph_algorithms.a:
 	$(CC) -c graph_algorithms/s21_graph_algorithms.cpp -o s21_graph_algorithms.o
 	@ar rcs s21_graph_algorithms.a s21_graph_algorithms.o
 	ranlib s21_graph_algorithms.a
- 
+
+check:
+	cp ../materials/linters/.clang-format ./
+	clang-format -i $(shell find . -name "*.cpp" -or -name "*.cc" -or -name "*.h" -or -name "*.h")
+	clang-format -n $(shell find . -name "*.cpp" -or -name "*.cc" -or -name "*.h" -or -name "*.h") --verbose -Werror
+	rm .clang-format
+
 clean:
 	rm -f *.gcno *.gcda *.info *.out *.gch
 	rm -rf ./gcov_rep.out.dSYM
