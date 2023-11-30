@@ -130,9 +130,11 @@ TsmResult GraphAlgorithms::SolveTravelingSalesmanProblem(Graph &graph) {
     srand(time(0));
     int src = 0;
     TsmResult result = createRoute(graph, pheromones, src);
+    addPheromone(result, add_pher);
     for (auto i = 1; i < 2400; i++) {
         int src = i % ants;
         TsmResult cur_ant = createRoute(graph, pheromones, src);
+        if ((int)cur_ant.vertices.size() != graph.GetSize() + 1) continue;
         addPheromone(cur_ant, add_pher);
         if (cur_ant.distance < result.distance) {
             result = cur_ant;
@@ -141,6 +143,8 @@ TsmResult GraphAlgorithms::SolveTravelingSalesmanProblem(Graph &graph) {
         if (i % ants == 0)
             updatePheromones(pheromones, add_pher);
     }
+    if ((int)result.vertices.size() != graph.GetSize() + 1 || result.distance == std::numeric_limits<double>::infinity())
+        throw std::string("it is impossible to solve");
     return result;
 }
 
@@ -152,12 +156,17 @@ TsmResult GraphAlgorithms::createRoute(Graph &graph, std::vector<std::vector<dou
         visited[src] = true;
         auto probabilityDest = transitionProbabilities(graph, pheromones, visited, src);
         int dest = chooseNextDestination(probabilityDest);
+        if (dest == -1) return res;
         res.vertices.push_back(dest);
         res.distance += graph.GetEdgeWeight(src, dest);
         src = dest;
     }
-    res.vertices.push_back(res.vertices[0]);
-    res.distance += graph.GetEdgeWeight(src, res.vertices[0]);
+    if (graph.GetEdgeWeight(src, res.vertices[0]) != 0){
+        res.vertices.push_back(res.vertices[0]);
+        res.distance += graph.GetEdgeWeight(src, res.vertices[0]);
+    }
+    if ((int)res.vertices.size() != graph.GetSize() + 1) 
+        res.distance = std::numeric_limits<double>::infinity();
     return res;
 }
 
@@ -184,14 +193,13 @@ std::vector<double> GraphAlgorithms::transitionProbabilities(Graph &graph, std::
     return probabilityToVertex;
 }
 
-int GraphAlgorithms::chooseNextDestination(std::vector<double> &probabilityToVertex) { // need remake
-    size_t dest;
+int GraphAlgorithms::chooseNextDestination(std::vector<double> &probabilityToVertex) {
     double choose = (double)rand() / RAND_MAX;
-    for (dest = 0; dest < probabilityToVertex.size(); dest++) {
+    for (size_t dest = 0; dest < probabilityToVertex.size(); dest++) {
         if (probabilityToVertex[dest] > choose) 
             return dest;
     }
-    return dest;
+    return -1;
 }
 
 void GraphAlgorithms::addPheromone(TsmResult &ant_route, std::vector<std::vector<double>> &add_pher) {
